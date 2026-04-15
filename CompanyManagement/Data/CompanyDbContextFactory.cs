@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace CompanyManagement.Data
 {
@@ -8,10 +9,14 @@ namespace CompanyManagement.Data
     {
         public CompanyDbContext CreateDbContext(string[] args)
         {
+
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
             var optionsBuilder = new DbContextOptionsBuilder<CompanyDbContext>();
 
-            optionsBuilder.UseSqlServer(
-                "server=localhost;Database=gdsi;User Id=default;Password=default;MultipleActiveResultSets=true;Encrypt=false");
+            optionsBuilder.UseSqlServer(config.GetConnectionString("sqlServerConnection"));
 
             return new CompanyDbContext(optionsBuilder.Options);
         }
