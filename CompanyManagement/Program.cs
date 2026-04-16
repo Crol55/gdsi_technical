@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using CompanyManagement.Services;
+using CompanyManagement.Common;
+using CompanyManagement.Dto;
 
 namespace CompanyManagement
 {
@@ -20,7 +22,13 @@ namespace CompanyManagement
                 options.UseSqlServer(config.GetConnectionString("sqlServerConnection"))
             );
 
+            services.AddScoped<CompanyService>();
+            services.AddScoped<UserService>();
+            services.AddScoped<BulkOperationProcessing>();
+
             var provider = services.BuildServiceProvider();
+
+            using var scope = provider.CreateScope();
 
             CompanyDbContext dbContext = provider.GetRequiredService<CompanyDbContext>();
 
@@ -29,7 +37,7 @@ namespace CompanyManagement
 
             Startup();
 
-            CompanyService cs = new CompanyService(dbContext);
+            var companyService = scope.ServiceProvider.GetRequiredService<CompanyService>();
 
             bool isValidKeyPressed = true;
 
@@ -49,10 +57,10 @@ namespace CompanyManagement
                         if (string.IsNullOrWhiteSpace(userInput))
                         {
                             Console.WriteLine("Invalid company name");
-                            break;
+                            continue;
                         }
-                        
-                        cs.AddCompany(userInput);
+
+                        companyService.AddCompany(userInput);
 
                         break;
 
@@ -63,15 +71,29 @@ namespace CompanyManagement
                         if (string.IsNullOrWhiteSpace(userInput2))
                         {
                             Console.WriteLine("Invalid company name");
-                            break;
+                            continue;
                         }
 
-                        cs.DeleteCompany(userInput2);
+                        companyService.DeleteCompany(userInput2);
 
                         break;
 
                     case '3':
-                        Console.WriteLine("Json was parsed");
+                        Console.WriteLine("Enter the absolute path to a .json file");
+                        string? input3 = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(input3))
+                        {
+                            Console.WriteLine("Error file path cannot be empty.\n");
+                            continue;
+                        }
+
+                        var jsonHandler = new JsonHandler();
+                        OperationBatchImport? x = jsonHandler.ProcessFile(input3);                        
+                        
+                        var bulkOpProcessing = scope.ServiceProvider.GetRequiredService<BulkOperationProcessing>();
+                        bulkOpProcessing.InitProcessing(x!);
+
                         break;
 
                     default:
@@ -85,13 +107,6 @@ namespace CompanyManagement
         private static void Startup()
         {
             Console.WriteLine("The database is starting....");
-
-            // command line options
-            /*
-             1) Add a company by name
-             2) Remove a company by name
-             3) JSON import (to add and remove users from a given company)
-             */
         }
 
         private static string UserOptions() {

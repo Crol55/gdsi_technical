@@ -1,0 +1,57 @@
+{
+    "operations": [
+        {
+            "type": "add",
+            "companyName": "Hershey",
+            "users": [
+                {
+                    "code": "U001",
+                    "fullName": "John Doe"
+                },
+                {
+                    "code": "U002",
+                    "fullName": "Jane Smith"
+                }
+            ]
+        },
+        {
+            "type": "add",
+            "companyName": "Crayola",
+            "users": [
+                {
+                    "code": "U004",
+                    "fullName": "John Doe"
+                },
+                {
+                    "code": "U005",
+                    "fullName": "Jane Smith"
+                }
+            ]
+        },
+        {
+            "type": "remove",
+            "companyName": "Crayola",
+            "users": [
+                {
+                    "code": "U004",
+                    "fullName": "John Doe"
+                },
+                {
+                    "code": "U005",
+                    "fullName": "Jane Smith"
+                }
+            ]
+        },
+        {
+            "type": "remove",
+            "companyName": "Hershey",
+            "users": [
+                {
+                    "code": "U010",
+                    "fullName": "Johs efesf"
+                }
+            ]
+        }
+    ]
+
+}
