@@ -30,12 +30,11 @@ namespace CompanyManagement
 
             using var scope = provider.CreateScope();
 
-            CompanyDbContext dbContext = provider.GetRequiredService<CompanyDbContext>();
-
             // Creating the database during runtime
+            CompanyDbContext dbContext = provider.GetRequiredService<CompanyDbContext>();
             dbContext.Database.Migrate();
 
-            Startup();
+            //Startup(); 
 
             var companyService = scope.ServiceProvider.GetRequiredService<CompanyService>();
 
@@ -79,7 +78,7 @@ namespace CompanyManagement
                         break;
 
                     case '3':
-                        Console.WriteLine("Enter the absolute path to a .json file");
+                        Console.WriteLine("\nEnter the absolute path to a .json file");
                         string? input3 = Console.ReadLine();
 
                         if (string.IsNullOrWhiteSpace(input3))
@@ -102,11 +101,6 @@ namespace CompanyManagement
                 }
             }
 
-        }
-
-        private static void Startup()
-        {
-            Console.WriteLine("The database is starting....");
         }
 
         private static string UserOptions() {
