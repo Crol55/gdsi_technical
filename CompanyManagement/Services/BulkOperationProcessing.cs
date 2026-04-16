@@ -22,12 +22,13 @@ namespace CompanyManagement.Services
                 {
                     Console.WriteLine($" - {user.Code} {user.FullName}");
                     if (op.Type == OperationType.Add)
-                        _userService.BulkAddUser(user.FullName, op.CompanyName);
-                    else 
+                        _userService.BulkAddUser(user, op.CompanyName);
+                    else
+                        _userService.BulkRemoveUser(user, op.CompanyName);
 
                         
                 }
-                // Calling save here to improve performance on bulk inserts
+                // Calling save here to improve performance on bulk inserts/remove
                 _userService.Save();
             }
         }
